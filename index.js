@@ -50,7 +50,7 @@ nodeCron.schedule('* * * * *', async function() {
             let result =await Room.updateOne({number:rooms[i].number,hostel:rooms[i].hostel},{status:"occupied",rollno:students[i].rollno});
             let result2 = await Student.updateOne({rollno:students[i].rollno},{status:"room_assigned"});
             let message = {
-                templateName: "RoomAlocated",
+                templateName: "StudentSignUp",
                 name:students[i].name,
                 email:students[i].email,
                 hostel:rooms[i].hostel,
@@ -128,28 +128,6 @@ app.post('/SignUpStudent',async function(req,res) {
         function(err) {
         console.error(err, err.stack);
     });
-
-    //let senderEmail = await getSenderEmail();
-    // let message = {
-    //     templateName: "StudentSignUp",
-    //     name:student.name,
-    //     email:student.email,
-    //     userid:student.userid,
-    //     password:student.password,
-    //     url:process.secret.STUDENT_NOTIFICATION_URL,// should define in .env
-    //     senderEmail:senderEmail
-    // }
-    // var params = 
-    // {
-    //     Message: JSON.stringify(message), 
-    //     TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
-    //     Subject:"sending message"
-    // };
-    // sns.publish(params, function(err, data) {
-    //     if (err) console.log(err, err.stack); 
-    //     else console.log(data);
-    // });
-    
     student.save().then(val => {
         res.json({statusCode:200, msg: "Student Added Successfully", val: val })
     })
@@ -231,7 +209,7 @@ app.get('/updateTestStatus',async function(req,res) {
 app.get('/statusRoom',async function(req,res) {
     let result = await Student.find({status:"occupied"});
     let result2 = await Student.find({status:"available"});
-    
+
     let r = {
         occupied:result,
         count:result2.length
