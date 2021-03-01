@@ -283,7 +283,7 @@ app.post('/testResult', async function(req,res){
     {    
         let DateAfter =new Date();
         DateAfter.setDate( DateAfter.getDate() + 4);
-        let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter,test:"positve"});
+        let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter,test:"negative"});
     }
     let rr={
         statusCode:200
