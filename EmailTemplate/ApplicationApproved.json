@@ -1,0 +1,8 @@
+{
+    "Template": {
+      "TemplateName": "ApplicationApproved",
+      "SubjectPart": "Application Approved",
+      "HtmlPart": "<p>Hello {{name}},</br>Your application has been approved.</br>You are now in the waiting list.</p>",
+      "TextPart": "Dear {{name}},"
+   }
+}

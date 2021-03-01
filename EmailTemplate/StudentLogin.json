@@ -1,8 +1,0 @@
-{
-    "Template": {
-      "TemplateName": "StudentLogin",
-      "SubjectPart": "Confirmation Email",
-      "HtmlPart": "<p>Hello {{name}},</br>Your one time password is {{password}}.</br>{{url}}</p>",
-      "TextPart": "Dear {{name}},"
-   }
-}

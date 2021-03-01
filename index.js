@@ -188,6 +188,26 @@ app.post('/updateAdmin',async function(req,res)
 app.post('/StudentAddedInWaiting',async function(req,res) {
     console.log(req);
     let result = await Student.updateOne({rollno:req.body.rollno},{status:"waiting"});
+
+    let senderEmaill = await getSenderEmail();
+    let message = {
+        templateName: "ApplicationApproved",
+        name:result.name,
+        email:result.email,
+        senderEmail:senderEmaill
+    }
+    console.log(message);
+    var params = 
+    {
+        Message: JSON.stringify(message), 
+        TopicArn: process.env.STUDENT_SIGNUP_SUCCESS_TOPIC,
+        Subject:"sending message"
+    };
+    sns.publish(params, function(err, data) {
+        if (err) console.log(err, err.stack); 
+        else console.log(data);
+    });
+
     res.json({statusCode:200,result:result});
 })
 
