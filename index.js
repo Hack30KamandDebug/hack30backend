@@ -29,7 +29,7 @@ async function getSenderEmail()
 {
   return new Promise(async function(resolve){
     let result = await Admin.find({});
-    if(result[0].length!==0)
+    if(result.length!==0)
     {
         resolve(result[0].email);
     } 
