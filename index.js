@@ -53,9 +53,10 @@ nodeCron.schedule('* * * * *', async function() {
                 name:students[i].name,
                 email:students[i].email,
                 hostel:rooms[i].hostel,
-                number:rooms[i].number,// should define in .env
+                number:rooms[i].number,
                 senderEmail:senderEmail
             }
+            console.log(message);
             var params = 
             {
                 Message: JSON.stringify(message), 
