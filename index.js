@@ -361,7 +361,7 @@ app.post('/addRoom',async function(req,res)
             "status": "available"
         });
         room.save().then(val => {
-        res.json(val);
+        res.json({statusCode:200,value:val});
         })
     }
     else
