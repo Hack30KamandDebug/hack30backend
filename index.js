@@ -50,7 +50,7 @@ nodeCron.schedule('* * * * *', async function() {
             let result =await Room.updateOne({number:rooms[i].number,hostel:rooms[i].hostel},{status:"occupied",rollno:students[i].rollno});
             let result2 = await Student.updateOne({rollno:students[i].rollno},{status:"room_assigned"});
             let message = {
-                templateName: "StudentSignUp",
+                templateName: "RoomAlocated",
                 name:students[i].name,
                 email:students[i].email,
                 hostel:rooms[i].hostel,
@@ -207,8 +207,8 @@ app.get('/updateTestStatus',async function(req,res) {
     res.json(result);
 })
 app.get('/statusRoom',async function(req,res) {
-    let result = await Student.find({status:"occupied"});
-    let result2 = await Student.find({status:"available"});
+    let result = await Room.find({status:"occupied"});
+    let result2 = await Room.find({status:"available"});
 
     let r = {
         occupied:result,
