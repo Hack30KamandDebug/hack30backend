@@ -285,6 +285,10 @@ app.post('/testResult', async function(req,res){
         DateAfter.setDate( DateAfter.getDate() + 4);
         let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter,test:"positve"});
     }
+    let rr={
+        statusCode:200
+    }
+    res.json(rr);
 })
 
 
