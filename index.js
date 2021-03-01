@@ -282,6 +282,7 @@ app.post('/loginStudent', async function(req,res){
     {
     var email =req.body.email;
     console.log(data);
+    var status="ss";
     if(data.VerificationAttributes[email]!==undefined)
     {
         status=data.VerificationAttributes[email].VerificationStatus;
