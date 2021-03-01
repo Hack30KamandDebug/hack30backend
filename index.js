@@ -285,7 +285,7 @@ app.post('/loginStudent', async function(req,res){
     });
 })
 
-app.post('/loginAdmin', async function(res,req){
+app.post('/loginAdmin', async function(req,res){
     if(!validator.isEmail(req.body.email))
     {
         let ress = {
