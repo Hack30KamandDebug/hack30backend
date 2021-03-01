@@ -7,9 +7,9 @@ var validator = require('validator');
 const nodeCron = require("node-cron")
 require('dotenv').config();
 const config = {
-  region: global.secretEnv.REGION,
-  accessKeyId: global.secretEnv.SNS_ACCESS_KEY_ID,
-  secretAccessKey: global.secretEnv.SNS_SECRET_ACCESS_KEY
+  region: process.env.REGION,
+  accessKeyId: process.env.SNS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.SNS_SECRET_ACCESS_KEY
 }
 var AWS = require('aws-sdk');
 const sns = new AWS.SNS(config)
@@ -18,7 +18,6 @@ const ses =  new AWS.SES(config);
 import Admin from './Models/admin';
 import Student from './Models/students';
 import Room from './Models/room';
-import validator from 'validator';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,9 +25,9 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
-function getSenderEmail() 
+async function getSenderEmail() 
 {
-  return new Promise(resolve =>{
+  return new Promise(async function(resolve){
     let result = await Admin.find({});
     if(result.length!==0)
     {
@@ -37,7 +36,7 @@ function getSenderEmail()
   })
 }
 
-cron.schedule('0 0 * * *', () => {
+nodeCron.schedule('0 0 * * *', async function() {
     console.log('running a task every minute');
     let rooms = await Room.find({status:"available"});
     let students =await  Student.find({status:"waiting"}).sort({requestTime: 1});
