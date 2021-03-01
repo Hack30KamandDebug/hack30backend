@@ -36,7 +36,7 @@ async function getSenderEmail()
   })
 }
 
-nodeCron.schedule('0 0 * * *', async function() {
+nodeCron.schedule('* * * * *', async function() {
     console.log('running a task every minute');
     let rooms = await Room.find({status:"available"});
     let students =await  Student.find({status:"waiting"}).sort({requestTime: 1});
