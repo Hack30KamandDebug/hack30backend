@@ -50,7 +50,7 @@ nodeCron.schedule('* * * * *', async function() {
             let result =await Room.updateOne({number:rooms[i].number,hostel:rooms[i].hostel},{status:"occupied",rollno:students[i].rollno});
             let result2 = await Student.updateOne({rollno:students[i].rollno},{status:"room_assigned"});
             let message = {
-                templateName: "RoomAlocated",
+                templateName: "StudentSignUp",
                 name:students[i].name,
                 email:students[i].email,
                 hostel:rooms[i].hostel,
