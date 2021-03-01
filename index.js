@@ -100,6 +100,17 @@ app.post('/SignUpStudent',async function(req,res) {
         "requestTime": new Date(),
         "emergencyStatus": req.body.emergencyStatus
     });
+    var verifyEmailPromise = ses.verifyEmailIdentity({EmailAddress: req.body.email}).promise();
+
+    // Handle promise's fulfilled/rejected states
+    verifyEmailPromise.then(
+    function(data) {
+        console.log("Email verification initiated");
+        }).catch(
+        function(err) {
+        console.error(err, err.stack);
+    });
+
     //let senderEmail = await getSenderEmail();
     // let message = {
     //     templateName: "StudentSignUp",
@@ -190,72 +201,7 @@ app.get('/getListOfWaitingStudent',async function(req,res) {
 })
 
 app.post('/sendEmail', async function(req,res){
-    if(!validator.isEmail(req.body.email))
-    {
-        let ress = {
-            statusCode : 402,
-            error: "Email is not valid"
-        }
-        res.json(ress);
-    }
-    function generatePassword() {
-        var length = 6,
-            charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-            retVal = "";
-        for (var i = 0, n = charset.length; i < length; ++i) {
-            retVal += charset.charAt(Math.floor(Math.random() * n));
-        }
-        return retVal;
-    }
-    let password = generatePassword();
-    let result =await Student.updateMany({email:req.body.email},{otp:password});
-    let senderEmail = await getSenderEmail();
-    let message = {
-        templateName: "StudentLogin",
-        name:req.body.name,
-        email:req.body.email,
-        password:password,
-        url:process.env.STUDENT_URL,// should define in .env
-        senderEmail:senderEmail
-    }
-    var params = 
-    {
-        Message: JSON.stringify(message), 
-        TopicArn: process.env.STUDENT_SIGNUP_SUCCESS_TOPIC,
-        Subject:"sending message"
-    };
-    var status="a";
-    var checkEmailPromise = ses.getIdentityVerificationAttributes({Identities: [req.body.email]}).promise();
-    // Handle promise's fulfilled/rejected states
-    checkEmailPromise.then(function(data) 
-    {
-    var email =req.body.email;
-    console.log(data);
-    if(data.VerificationAttributes[email]!==undefined)
-    {
-        status=data.VerificationAttributes[email].VerificationStatus;
-        console.log(status);
-    }
-    if(status==="Success")
-    {
-    }
-    else
-    {
-        var verifyEmailPromise = ses.verifyEmailIdentity({EmailAddress: req.body.email}).promise();
-
-        // Handle promise's fulfilled/rejected states
-        verifyEmailPromise.then(
-        function(data) {
-            console.log("Email verification initiated");
-            }).catch(
-            function(err) {
-            console.error(err, err.stack);
-        });
-    }
-    }).catch(
-    function(err) {
-        console.error(err, err.stack);
-    });
+    
 })
 app.post('/loginStudent', async function(req,res){
     if(!validator.isEmail(req.body.email))
