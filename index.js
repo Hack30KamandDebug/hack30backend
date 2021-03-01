@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser  = require('body-parser');
 //Routes
 var validator = require('validator');
+const nodeCron = require("node-cron")
 require('dotenv').config();
 const config = {
   region: global.secretEnv.REGION,
@@ -36,7 +37,48 @@ function getSenderEmail()
   })
 }
 
-app.post('/addStudent',async function(req,res) {
+cron.schedule('0 0 * * *', () => {
+    console.log('running a task every minute');
+    let rooms = await Room.find({status:"available"});
+    let students =await  Student.find({status:"waiting"}).sort({requestTime: 1});
+    let senderEmail = await getSenderEmail();
+    for(let i=0;i<rooms.length;i++)
+    {
+        if(students.length>=i+1)
+        {
+            let result =await Room.updateOne({number:rooms[i].number,hostel:rooms[i].hostel},{status:"occupied",rollno:students[i].rollno});
+            let result2 = await Student.updateOne({rollno:students},{status:"room_assigned"});
+            let message = {
+                templateName: "RoomAlocated",
+                name:students[i].name,
+                email:students[i].email,
+                hostel:rooms[i].hostel,
+                number:rooms[i].number,
+                url:process.secret.STUDENT_NOTIFICATION_URL,// should define in .env
+                senderEmail:senderEmail
+            }
+            var params = 
+            {
+                Message: JSON.stringify(message), 
+                TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
+                Subject:"sending message"
+            };
+            sns.publish(params, function(err, data) {
+                if (err) console.log(err, err.stack); 
+                else console.log(data);
+            });
+        }
+    }
+});
+
+app.post('/StudentEntersInRoom',async function(req,res) {
+    
+    let result = await Student.updateOne({rollno:req.body.rollno},{quartineStartTime: new Date()});
+    res.json(result);
+})
+
+
+app.post('/SignUpStudent',async function(req,res) {
   
     let result = await Student.find({rollno:req.body.rollno});
     if(result.length!==0)
@@ -58,24 +100,26 @@ app.post('/addStudent',async function(req,res) {
         "requestTime": new Date(),
         "emergencyStatus": req.body.emergencyStatus
     });
-
-    let senderEmail = await getSenderEmail();
-    let message = {
-        templateName: "StudentSignUp",
-        name:student.name,
-        email:student.email,
-        userid:student.userid,
-        password:student.password,
-        url:process.secret.STUDENT_NOTIFICATION_URL,// should define in .env
-        senderEmail:senderEmail
-    }
-    var params = 
-    {
-        Message: JSON.stringify(message), 
-        TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
-        Subject:"sending message"
-    };
-
+    //let senderEmail = await getSenderEmail();
+    // let message = {
+    //     templateName: "StudentSignUp",
+    //     name:student.name,
+    //     email:student.email,
+    //     userid:student.userid,
+    //     password:student.password,
+    //     url:process.secret.STUDENT_NOTIFICATION_URL,// should define in .env
+    //     senderEmail:senderEmail
+    // }
+    // var params = 
+    // {
+    //     Message: JSON.stringify(message), 
+    //     TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
+    //     Subject:"sending message"
+    // };
+    // sns.publish(params, function(err, data) {
+    //     if (err) console.log(err, err.stack); 
+    //     else console.log(data);
+    // });
     
     student.save().then(val => {
         res.json({ msg: "Student Added Successfully", val: val })

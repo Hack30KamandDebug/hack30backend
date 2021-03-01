@@ -1,0 +1,8 @@
+{
+    "Template": {
+      "TemplateName": "RoomAlocated",
+      "SubjectPart": "Room alocated",
+      "HtmlPart": "<p>Hello {{name}},</br>Your waiting is over.</br>Room has been alocated.</br>hostel : {{hostel}}</br>room number : {{number}} </br>{{url}}</p>",
+      "TextPart": "Dear {{name}},"
+   }
+}
