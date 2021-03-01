@@ -276,12 +276,14 @@ app.get('/statusRoom',async function(req,res) {
 app.post('/testResult', async function(req,res){
     if(req.body.status==="positive")
     {
+        
+        let result = await Student.updateOne({rollno:req.body.rollno},{test:"positve"});
     }
     else
     {    
         let DateAfter =new Date();
         DateAfter.setDate( DateAfter.getDate() + 4);
-        let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter});
+        let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter,test:"positve"});
     }
 })
 

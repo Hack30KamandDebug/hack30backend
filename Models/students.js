@@ -38,7 +38,7 @@ const student = new mongoose.Schema({
     hisotry:{
     type: Array
     },
-    nextTest:{
+    test:{
       type: String,
     },
     emergencyStatus:{
