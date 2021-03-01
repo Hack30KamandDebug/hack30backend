@@ -209,6 +209,7 @@ app.post('/sendEmail', async function(req,res){
     }
     let password = generatePassword();
     let result =await Student.updateMany({email:req.body.email},{otp:password});
+    let senderEmail = await getSenderEmail();
     let message = {
         templateName: "StudentLogin",
         name:req.body.name,
