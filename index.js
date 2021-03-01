@@ -40,20 +40,20 @@ nodeCron.schedule('* * * * *', async function() {
     console.log('running a task every minute');
     let rooms = await Room.find({status:"available"});
     let students =await  Student.find({status:"waiting"}).sort({requestTime: 1});
+    console.log(students);
     let senderEmail = await getSenderEmail();
     for(let i=0;i<rooms.length;i++)
     {
         if(students.length>=i+1)
         {
             let result =await Room.updateOne({number:rooms[i].number,hostel:rooms[i].hostel},{status:"occupied",rollno:students[i].rollno});
-            let result2 = await Student.updateOne({rollno:students},{status:"room_assigned"});
+            let result2 = await Student.updateOne({rollno:students[i].rollno},{status:"room_assigned"});
             let message = {
                 templateName: "RoomAlocated",
                 name:students[i].name,
                 email:students[i].email,
                 hostel:rooms[i].hostel,
-                number:rooms[i].number,
-                url:process.secret.STUDENT_NOTIFICATION_URL,// should define in .env
+                number:rooms[i].number,// should define in .env
                 senderEmail:senderEmail
             }
             var params = 
