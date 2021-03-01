@@ -279,9 +279,8 @@ app.post('/testResult', async function(req,res){
     }
     else
     {    
-        let DateNow =new Date();
         let DateAfter =new Date();
-        DateAfter.setDate( DateBefore.getDate() + 4);
+        DateAfter.setDate( DateAfter.getDate() + 4);
         let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter});
     }
 })
