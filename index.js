@@ -41,7 +41,7 @@ nodeCron.schedule('* * * * *', async function() {
     let rooms = await Room.find({status:"available"});
     let students =await  Student.find({status:"waiting"}).sort({requestTime: 1});
     console.log(students);
-    let senderEmail = await getSenderEmail();
+    let senderEmaill = await getSenderEmail();
     for(let i=0;i<rooms.length;i++)
     {
         if(students.length>=i+1)
@@ -54,7 +54,7 @@ nodeCron.schedule('* * * * *', async function() {
                 email:students[i].email,
                 hostel:rooms[i].hostel,
                 number:rooms[i].number,
-                senderEmail:senderEmail
+                senderEmail:senderEmaill
             }
             console.log(message);
             var params = 
