@@ -11,6 +11,9 @@ const room = new mongoose.Schema({
   hostel:{
     type: String,
     required: true,
-  }
+  },
+  rollno:{
+    type: String,
+  },
 })
 module.exports = mongoose.model('Room',room)

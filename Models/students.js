@@ -16,10 +16,6 @@ const student = new mongoose.Schema({
     type: String,
     required: true,
     },
-    phone_number: {
-    type: String,
-    required: true,
-    },
     status: {
     type: String,
     required: true,
@@ -38,7 +34,6 @@ const student = new mongoose.Schema({
     },
     emergencyStatus:{
         type: String,
-        required:true
     }
 })
 module.exports = mongoose.model('Student',student)
