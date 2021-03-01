@@ -59,7 +59,7 @@ nodeCron.schedule('* * * * *', async function() {
             var params = 
             {
                 Message: JSON.stringify(message), 
-                TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
+                TopicArn: process.env.STUDENT_SIGNUP_SUCCESS_TOPIC,
                 Subject:"sending message"
             };
             console.log(students[i].name+" has benn alloted room no "+rooms[i].number+" of hostel "+rooms[i].hostel);
@@ -71,11 +71,19 @@ nodeCron.schedule('* * * * *', async function() {
     }
 });
 
+
+app.post('/StudentRequestToAdmin',async function(req,res) {
+    let result = await Student.updateOne({rollno:req.body.rollno},{status: "waiting request",reason:req.body.rollno});
+    res.json(result);
+})
+
+
 app.post('/StudentEntersInRoom',async function(req,res) {
     
     let result = await Student.updateOne({rollno:req.body.rollno},{quartineStartTime: new Date()});
     res.json(result);
 })
+
 
 
 app.post('/SignUpStudent',async function(req,res) {
@@ -189,16 +197,26 @@ app.post('/updateAdmin',async function(req,res)
 })
 
 
-app.get('/StudentAddedInWaiting',async function(req,res) {
+app.post('/StudentAddedInWaiting',async function(req,res) {
     let result = await Student.updateOne({rollno:req.body.rollno},{status:"waiting",emergencyStatus:req.body.emergencyStatus});
     res.json(result);
 })
 
+app.get('/getListOfWaitingRequestStudent',async function(req,res) {
+    let result = await Student.find({status:"waiting request"});
+    res.json(result);
+})
 
 app.get('/getListOfWaitingStudent',async function(req,res) {
     let result = await Student.find({status:"waiting"});
     res.json(result);
 })
+
+app.get('/updateTestStatus',async function(req,res) {
+    let result = await Student.find({status:"waiting"});
+    res.json(result);
+})
+
 
 app.post('/sendEmail', async function(req,res){
     
