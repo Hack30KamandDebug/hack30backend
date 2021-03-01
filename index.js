@@ -199,7 +199,7 @@ app.post('/updateAdmin',async function(req,res)
 
 app.post('/StudentAddedInWaiting',async function(req,res) {
     let result = await Student.updateOne({rollno:req.body.rollno},{status:"waiting",emergencyStatus:req.body.emergencyStatus});
-    res.json(result);
+    res.json({statusCode:200,result:result});
 })
 
 app.get('/getListOfWaitingRequestStudent',async function(req,res) {
