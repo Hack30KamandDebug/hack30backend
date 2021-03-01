@@ -31,7 +31,7 @@ async function getSenderEmail()
     let result = await Admin.find({});
     if(result[0].length!==0)
     {
-        resolve(result.email);
+        resolve(result[0].email);
     } 
   })
 }
