@@ -29,11 +29,17 @@ const student = new mongoose.Schema({
     quartineEndTime:{
     type: String,
     },
+    otp:{
+    type: String,
+    },
     hisotry:{
     type: Array
     },
     emergencyStatus:{
-        type: String,
+    type: String,
+    },
+    emailStatus:{
+    type: String,
     }
 })
 module.exports = mongoose.model('Student',student)

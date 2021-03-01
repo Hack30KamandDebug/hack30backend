@@ -62,6 +62,7 @@ nodeCron.schedule('0 0 * * *', async function() {
                 TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
                 Subject:"sending message"
             };
+            console.log(students[i].name+" has benn alloted room no "+rooms[i].number+" of hostel "+rooms[i].hostel);
             sns.publish(params, function(err, data) {
                 if (err) console.log(err, err.stack); 
                 else console.log(data);
@@ -124,9 +125,8 @@ app.post('/SignUpStudent',async function(req,res) {
         res.json({statusCode:200, msg: "Student Added Successfully", val: val })
     })
 })
-
-app.post('/updateAdmin',async function(req,res) {
-
+app.post('/updateAdmin',async function(req,res) 
+{
     if(!validator.isEmail(req.body.email))
     {
         let ress = {
@@ -208,18 +208,19 @@ app.post('/sendEmail', async function(req,res){
         return retVal;
     }
     let password = generatePassword();
+    let result =await Student.updateMany({email:req.body.email},{otp:password});
     let message = {
         templateName: "StudentLogin",
         name:req.body.name,
         email:req.body.email,
         password:password,
-        url:process.secret.STUDENT_URL,// should define in .env
+        url:process.env.STUDENT_URL,// should define in .env
         senderEmail:senderEmail
     }
     var params = 
     {
         Message: JSON.stringify(message), 
-        TopicArn: process.secret.STUDENT_SIGNUP_SUCCESS_TOPIC,
+        TopicArn: process.env.STUDENT_SIGNUP_SUCCESS_TOPIC,
         Subject:"sending message"
     };
     var status="a";
@@ -282,6 +283,14 @@ app.post('/loginStudent', async function(req,res){
         let ress = {
             statusCode : 403,
             error: "Authentication Failed"
+        }
+        res.json(ress);
+    }
+    else if(result.emailStatus!=='confirm')
+    {
+        let ress = {
+            statusCode : 404,
+            error: "Email not confirm"
         }
         res.json(ress);
     }
