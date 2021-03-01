@@ -121,7 +121,7 @@ app.post('/SignUpStudent',async function(req,res) {
     // });
     
     student.save().then(val => {
-        res.json({ msg: "Student Added Successfully", val: val })
+        res.json({statusCode:200, msg: "Student Added Successfully", val: val })
     })
 })
 
@@ -189,7 +189,7 @@ app.get('/getListOfWaitingStudent',async function(req,res) {
     res.json(result);
 })
 
-app.post('/sendEmail', async function(res,req){
+app.post('/sendEmail', async function(req,res){
     if(!validator.isEmail(req.body.email))
     {
         let ress = {
@@ -266,7 +266,7 @@ app.post('/sendEmail', async function(res,req){
         console.error(err, err.stack);
     });
 })
-app.post('/loginStudent', async function(res,req){
+app.post('/loginStudent', async function(req,res){
     if(!validator.isEmail(req.body.email))
     {
         let ress = {
@@ -275,8 +275,8 @@ app.post('/loginStudent', async function(res,req){
         }
         res.json(ress);
     }
-
     let result = await Student.find({'email':req.body.email,password:req.body.password});
+    console.log(result);
     if(result.length===0)
     {
         let ress = {
@@ -354,7 +354,7 @@ mongoose.connect('mongodb+srv://2701gouravgoel:abcd@cluster0.a6n1c.mongodb.net/m
     }).on('error',function(err){
     console.log('Error', err);
 })
-
-app.listen(8000, function () {
-    console.log('Listening to Port 8000');
+const PORT = process.env.PORT || 80;
+app.listen(PORT, function () {
+    console.log('Listening to Port 80');
 });
