@@ -238,10 +238,6 @@ app.post('/sendEmail', async function(req,res){
     }
     if(status==="Success")
     {
-        sns.publish(params, function(err, data) {
-            if (err) console.log(err, err.stack); 
-            else console.log(data);
-        });
     }
     else
     {
@@ -255,13 +251,6 @@ app.post('/sendEmail', async function(req,res){
             function(err) {
             console.error(err, err.stack);
         });
-        setTimeout(function()
-        {
-        sns.publish(params, function(err, data) {
-            if (err) console.log(err, err.stack); 
-            else console.log(data);
-        });
-        }, 120000);
     }
     }).catch(
     function(err) {
@@ -287,15 +276,18 @@ app.post('/loginStudent', async function(req,res){
         }
         res.json(ress);
     }
-    else if(result.emailStatus!=='confirm')
+    var checkEmailPromise = ses.getIdentityVerificationAttributes({Identities: [req.body.email]}).promise();
+    // Handle promise's fulfilled/rejected states
+    checkEmailPromise.then(function(data) 
     {
-        let ress = {
-            statusCode : 404,
-            error: "Email not confirm"
-        }
-        res.json(ress);
+    var email =req.body.email;
+    console.log(data);
+    if(data.VerificationAttributes[email]!==undefined)
+    {
+        status=data.VerificationAttributes[email].VerificationStatus;
+        console.log(status);
     }
-    else
+    if(status==="Success")
     {
         let ress = {
             statusCode : 200,
@@ -303,6 +295,29 @@ app.post('/loginStudent', async function(req,res){
         }
         res.json(ress);
     }
+    else
+    {
+        var verifyEmailPromise = ses.verifyEmailIdentity({EmailAddress: req.body.email}).promise();
+
+        // Handle promise's fulfilled/rejected states
+        verifyEmailPromise.then(
+        function(data) {
+            console.log("Email verification initiated");
+            }).catch(
+            function(err) {
+            console.error(err, err.stack);
+        });
+        
+        let ress = {
+            statusCode : 404,
+            result: "EmailNotConfirm"
+        }
+        res.json(ress);
+    }
+    }).catch(
+    function(err) {
+        console.error(err, err.stack);
+    });
 })
 
 app.post('/loginAdmin', async function(res,req){
