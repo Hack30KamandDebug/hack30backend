@@ -206,6 +206,7 @@ app.post('/StudentAddedInWaiting',async function(req,res) {
 
 app.get('/getListOfWaitingRequestStudent',async function(req,res) {
     let result = await Student.find({status:"waiting request"});
+    console.log(result);
     res.json(result);
 })
 
