@@ -75,7 +75,7 @@ nodeCron.schedule('* * * * *', async function() {
 
 app.post('/StudentRequestToAdmin',async function(req,res) {
     let rr = await Student.find({rollno:req.body.rollno});
-    if(rr[0].status!=="waiting")
+    if(rr[0].status!=="pending")
     {
         let ress = {
             statusCode:402
