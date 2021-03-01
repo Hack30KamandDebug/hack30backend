@@ -75,7 +75,7 @@ nodeCron.schedule('* * * * *', async function() {
 
 app.post('/StudentRequestToAdmin',async function(req,res) {
     let result = await Student.updateOne({rollno:req.body.rollno},{status: "waiting request",reason:req.body.rollno});
-    res.json(result);
+    res.json({statusCode:200,result:result});
 })
 
 
