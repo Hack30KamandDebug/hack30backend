@@ -1,0 +1,8 @@
+{
+    "Template": {
+      "TemplateName": "StudentSignUp",
+      "SubjectPart": "Added to waiting List",
+      "HtmlPart": "<p>Hello {{name}},</br>You just added to the waiting list.</br>Check your status at portal.</br>{{url}}</p>",
+      "TextPart": "Dear {{name}},"
+   }
+}
