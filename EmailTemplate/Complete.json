@@ -1,0 +1,8 @@
+{
+    "Template": {
+      "TemplateName": "Complete",
+      "SubjectPart": "Added to waiting List",
+      "HtmlPart": "<p>Quatine Completed</p>",
+      "TextPart": "Dear {{name}},"
+   }
+}

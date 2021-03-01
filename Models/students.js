@@ -32,8 +32,14 @@ const student = new mongoose.Schema({
     otp:{
     type: String,
     },
+    room:{
+    type: String,
+    },
     hisotry:{
     type: Array
+    },
+    nextTest:{
+      type: String,
     },
     emergencyStatus:{
     type: String,

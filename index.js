@@ -48,7 +48,7 @@ nodeCron.schedule('* * * * *', async function() {
         if(students.length>=i+1)
         {
             let result =await Room.updateOne({number:rooms[i].number,hostel:rooms[i].hostel},{status:"occupied",rollno:students[i].rollno});
-            let result2 = await Student.updateOne({rollno:students[i].rollno},{status:"room_assigned"});
+            let result2 = await Student.updateOne({rollno:students[i].rollno},{status:"room_assigned",room:result._id});
             let message = {
                 templateName: "StudentSignUp",
                 name:students[i].name,
@@ -74,6 +74,39 @@ nodeCron.schedule('* * * * *', async function() {
 });
 
 
+
+nodeCron.schedule('* * * * *', async function() {
+
+    let result = await Student.find({status:"quartine"});
+    for(let i=0;i<result.length;i++)
+    {
+        if(result[i].quartineEndTime< new Date())
+        {
+            Room.findByIdAndUpdate(result[i].room,{status:"available"});
+            Student.findByIdAndUpdate(result[i]._id,{status:"complete"});
+            let senderEmaill = await getSenderEmail();
+            let message = {
+                templateName: "Complete",
+                name:result.name,
+                email:result.email,
+                senderEmail:senderEmaill
+            }
+            console.log(message);
+            var params = 
+            {
+                Message: JSON.stringify(message), 
+                TopicArn: process.env.STUDENT_SIGNUP_SUCCESS_TOPIC,
+                Subject:"sending message"
+            };
+            sns.publish(params, function(err, data) {
+                if (err) console.log(err, err.stack); 
+                else console.log(data);
+            });
+        }
+    }
+});
+
+
 app.post('/StudentRequestToAdmin',async function(req,res) {
     let rr = await Student.find({rollno:req.body.rollno});
     if(rr[0].status!=="pending")
@@ -90,7 +123,7 @@ app.post('/StudentRequestToAdmin',async function(req,res) {
 
 app.post('/StudentEntersInRoom',async function(req,res) {
     
-    let result = await Student.updateOne({rollno:req.body.rollno},{quartineStartTime: new Date()});
+    let result = await Student.updateOne({rollno:req.body.rollno},{quartineStartTime: new Date(),status:"quartine"});
     res.json(result);
 })
 
@@ -211,6 +244,8 @@ app.post('/StudentAddedInWaiting',async function(req,res) {
     res.json({statusCode:200,result:result});
 })
 
+
+
 app.get('/getListOfWaitingRequestStudent',async function(req,res) {
     let result = await Student.find({status:"waiting request"});
     console.log(result);
@@ -238,9 +273,20 @@ app.get('/statusRoom',async function(req,res) {
 })
 
 
-app.post('/sendEmail', async function(req,res){
-    
+app.post('/testResult', async function(req,res){
+    if(req.body.status==="positive")
+    {
+    }
+    else
+    {    
+        let DateNow =new Date();
+        let DateAfter =new Date();
+        DateAfter.setDate( DateBefore.getDate() + 4);
+        let result = await Student.updateOne({rollno:req.body.rollno},{quartineEndTime:DateAfter});
+    }
 })
+
+
 app.post('/loginStudent', async function(req,res){
     if(!validator.isEmail(req.body.email))
     {
