@@ -29,6 +29,7 @@ async function getSenderEmail()
 {
   return new Promise(async function(resolve){
     let result = await Admin.find({});
+    console.log(result);
     if(result.length!==0)
     {
         resolve(result[0].email);
@@ -40,7 +41,7 @@ nodeCron.schedule('* * * * *', async function() {
     console.log('running a task every minute');
     let rooms = await Room.find({status:"available"});
     let students =await  Student.find({status:"waiting"}).sort({requestTime: 1});
-    console.log(students);
+    //console.log(students);
     let senderEmaill = await getSenderEmail();
     for(let i=0;i<rooms.length;i++)
     {
