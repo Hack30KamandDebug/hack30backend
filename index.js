@@ -228,6 +228,16 @@ app.get('/updateTestStatus',async function(req,res) {
     let result = await Student.find({status:"waiting"});
     res.json(result);
 })
+app.get('/statusRoom',async function(req,res) {
+    let result = await Student.find({status:"occupied"});
+    let result2 = await Student.find({status:"available"});
+    
+    let r = {
+        occupied:result,
+        count:result2.length
+    }
+    res.json(r);
+})
 
 
 app.post('/sendEmail', async function(req,res){
@@ -325,6 +335,7 @@ app.post('/loginAdmin', async function(req,res){
         res.json(ress);
     }
 })
+
 
 app.post('/addRoom',async function(req,res) 
 {
