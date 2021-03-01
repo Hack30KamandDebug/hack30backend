@@ -2,7 +2,7 @@
     "Template": {
       "TemplateName": "StudentSignUp",
       "SubjectPart": "Room alocated",
-      "HtmlPart": "<p>Hello {{name}},</br>Your waiting is over.</br>Room has been alocated.</br>hostel : {{hostel}}</br>room number : {{number}}</p>",
+      "HtmlPart": "<p>Hello {{name}},</br>Your waiting is over.Room has been alocated.</p>",
       "TextPart": "Dear {{name}},"
    }
 }
