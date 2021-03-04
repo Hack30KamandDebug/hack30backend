@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
+// Mail part by AWS
 
 async function getSenderEmail() 
 {
